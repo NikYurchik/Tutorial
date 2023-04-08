@@ -30,15 +30,16 @@ others = []     #
  
 def add_file(files, s_path, s_name, s_ext, d_path, d_name):
     dfname = d_name
+    dext = '.' + s_ext if len(s_ext) > 0 else ''
     cnt = 0
     for im in files:
         if im.get('d_path') == d_path and im.get('d_name') == d_name:   # dublicate filename
             cnt += 1
-            ix = d_name.rfind('.' + s_ext)
-            if ix < 0:
-                dfname = d_name + '(' + str(cnt) + ')'
+            if len(dext) > 0:
+                ix = d_name.rfind(dext)
+                dfname = d_name[0:ix] + '(' + str(cnt) + ')' + dext
             else:
-                dfname = d_name[0:ix] + '(' + str(cnt) + ').' + s_ext
+                dfname = d_name + '(' + str(cnt) + ')'
     files.append({'s_path': s_path, 's_name': s_name, 's_ext': s_ext, 'd_path': d_path, 'd_name': dfname})
     
             
@@ -58,14 +59,14 @@ else:
     destination_path = '.\\dst'
     destination_orig = source_path
 
-for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
-    TRANS[ord(c)] = l
-    TRANS[ord(c.upper())] = l.upper()
-
 def rename_file(src_file, dst_file):
     if src_file != dst_file:
         os.renames(src_file, dst_file) 
 
+
+for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+    TRANS[ord(c)] = l
+    TRANS[ord(c.upper())] = l.upper()
 
 for root, dirs, files in os.walk( source_path):
     for dname in dirs:
