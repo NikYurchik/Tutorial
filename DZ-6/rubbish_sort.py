@@ -5,54 +5,80 @@ import os
 import shutil
 import sys
 
-CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
-TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+CIMAGES = ('JPEG', 'PNG', 'JPG', 'SVG', 'BMP')
+CDOCUMENTS = ('DOC', 'DOCX', 'TXT', 'PDF', 'XLS', 'XLSX', 'PPT', 'PPTX')
+CAUDIO = ('MP3', 'OGG', 'WAV', 'AMR', 'FLAC')
+CVIDEO = ('AVI', 'MP4', 'MOV', 'MKV', 'TS', 'SRT', 'DTS', 'MPG')
+CARCHIVES = ('ZIP', 'GZ', 'TAR', 'RAR')
+
+CYRILLIC_SYMBOLS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЄІЇҐабвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
+TRANSLATION = ("A", "B", "V", "G", "D", "E", "E", "Zh", "Z", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
+               "F", "H", "Ts", "Ch", "Sh", "Sch", "", "Y", "", "E", "Yu", "Ya", "Ye", "I", "Ji", "G",
+               "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "ye", "i", "ji", "g")
+TRANSLATION_UKR = ("A", "B", "V", "H", "D", "E", "E", "Zh", "Z", "Y", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
+                   "F", "Kh", "Ts", "Ch", "Sh", "Shch", "", "Y", "", "E", "Yu", "Ya", "Ye", "I", "Yi", "G",
+                   "a", "b", "v", "h", "d", "e", "e", "zh", "z", "y", "i", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+                   "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "iu", "ia", "ie", "i", "i", "g")
 TRANS = {}
+TRANSU = {}
     
-def normalize(name, ext = ''):
+def transliteration(text, is_ukr = False):
     global TRANS
-    if len(TRANS) == 0:
-        for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
-            TRANS[ord(c)] = l
-            TRANS[ord(c.upper())] = l.upper()
+    global TRANSU
+    if is_ukr:
+        if len(TRANSU) == 0:
+            for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION_UKR):
+                TRANSU[ord(c)] = l
+        return(text.translate(TRANSU))
+    else:
+        if len(TRANS) == 0:
+            for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+                TRANS[ord(c)] = l
+        return(text.translate(TRANS))
+
+
+def normalize(name, ext = ''):
     res = ''
-    for s in name.translate(TRANS):
-        if (s >= 'A' and s <= 'Z') or (s >= 'a' and s <= 'z') or (s >= '0' and s <= '9'):
-            res = res + s
-        else:
-            res = res +'_'
-    if len(ext) > 0:
-        res = res + '.' + ext
+    if len(name) > 0:
+        for s in transliteration(name):
+            if (s >= 'A' and s <= 'Z') or (s >= 'a' and s <= 'z') or (s >= '0' and s <= '9'):
+                res = res + s
+            else:
+                res = res +'_'
+        if len(ext) > 0:
+            res = res + '.' + ext
     return res
 
-def add_file(files, s_path, s_name, s_ext, d_path, d_name):
-    dfname = d_name
-    dext = '.' + s_ext if len(s_ext) > 0 else ''
-    cnt = 0
-    for im in files:
-        if im.get('d_path') == d_path and im.get('d_name') == d_name:   # dublicate filename
-            cnt += 1
-            if len(dext) > 0:
-                ix = d_name.rfind(dext)
-                dfname = d_name[0:ix] + '(' + str(cnt) + ')' + dext
-            else:
-                dfname = d_name + '(' + str(cnt) + ')'
-    files.append({'s_path': s_path, 's_name': s_name, 's_ext': s_ext, 'd_path': d_path, 'd_name': dfname})
-    
 def rename_file(src_file, dst_file):
     if src_file != dst_file:
         os.renames(src_file, dst_file) 
 
-def sort(source_path, destination_path):
+def sort(source_path, destination_path = ''):
     directories = []
     images = []     #('JPEG', 'PNG', 'JPG', 'SVG')
     documents = []  #('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX')
     audio = []      #('MP3', 'OGG', 'WAV', 'AMR')
-    video = []      #('AVI', 'MP4', 'MOV', 'MKV')
+    video = []      #('AVI', 'MP4', 'MOV', 'MKV', 'TS')
     archives = []   #('ZIP', 'GZ', 'TAR')
     others = []     #
  
+    def add_file(files, s_path, s_name, s_ext, d_path, d_name):
+        dfname = d_name
+        dext = '.' + s_ext if len(s_ext) > 0 else ''
+        cnt = 0
+        for im in files:
+            if im.get('d_path') == d_path and im.get('d_name') == d_name:   # dublicate filename
+                cnt += 1
+                if len(dext) > 0:
+                    ix = d_name.rfind(dext)
+                    dfname = d_name[0:ix] + '(' + str(cnt) + ')' + dext
+                else:
+                    dfname = d_name + '(' + str(cnt) + ')'
+        files.append({'s_path': s_path, 's_name': s_name, 's_ext': s_ext, 'd_path': d_path, 'd_name': dfname})
+        
+    if len(destination_path) == 0:
+        destination_path = source_path
     destination_orig = destination_path
     if destination_path == source_path:
         destination_path = destination_orig + '(dst)'
@@ -68,15 +94,15 @@ def sort(source_path, destination_path):
                 s_name = fname[0:ix:]
                 ext = fname[ix+1:]
                 EXT = ext.upper()
-                if EXT in ('JPEG', 'PNG', 'JPG', 'SVG'):
+                if EXT in CIMAGES:
                     add_file(images, root, fname, ext, destination_path + '\\images', normalize(s_name, ext))
-                elif EXT in ('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'):
+                elif EXT in CDOCUMENTS:
                     add_file(documents, root, fname, ext, destination_path + '\\documents', normalize(s_name, ext))
-                elif EXT in ('MP3', 'OGG', 'WAV', 'AMR'):
+                elif EXT in CAUDIO:
                     add_file(audio, root, fname, ext, destination_path + '\\audio', normalize(s_name, ext))
-                elif EXT in ('AVI', 'MP4', 'MOV', 'MKV'):
+                elif EXT in CVIDEO:
                     add_file(video, root, fname, ext, destination_path + '\\video', normalize(s_name, ext))
-                elif EXT in ('ZIP', 'GZ', 'TAR', 'RAR'):
+                elif EXT in CARCHIVES:
                     add_file(archives, root, fname, ext, destination_path + '\\archives\\' + s_name, normalize(s_name, ext))
                 else:
                     add_file(others, root, fname, ext, destination_path, normalize(s_name, ext))
@@ -115,3 +141,5 @@ if __name__ == "__main__":
         destination_path = source_path
 
     sort(source_path, destination_path)
+else:
+    normalize('')
