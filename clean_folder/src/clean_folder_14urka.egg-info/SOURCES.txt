@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+src/clean_folder/__init__.py
+src/clean_folder/clean.py
+src/clean_folder_14urka.egg-info/PKG-INFO
+src/clean_folder_14urka.egg-info/SOURCES.txt
+src/clean_folder_14urka.egg-info/dependency_links.txt
+src/clean_folder_14urka.egg-info/top_level.txt
