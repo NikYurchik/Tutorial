@@ -134,7 +134,6 @@ def sort(source_path, destination_path = ''):
     for dir in directories:
         shutil.rmtree(os.path.join(dir.get('s_path'), dir.get('s_name')), ignore_errors=True)
 
-    print(source_path, destination_path)
     if destination_orig == source_path:
         os.rename(destination_path, source_path)
 
