@@ -63,6 +63,13 @@ def sort(source_path, destination_path = ''):
     archives = []   #('ZIP', 'GZ', 'TAR')
     others = []     #
  
+    def normalize_path(pname):
+        if pname[0] == '"':
+            pname = pname[1:]
+        while pname[-1] in ('\\', '"'):
+            pname = pname[0:len(pname)-1]
+        return pname
+    
     def add_file(files, s_path, s_name, s_ext, d_path, d_name):
         dfname = d_name
         dext = '.' + s_ext if len(s_ext) > 0 else ''
@@ -79,6 +86,8 @@ def sort(source_path, destination_path = ''):
         
     if len(destination_path) == 0:
         destination_path = source_path
+    source_path = normalize_path(source_path)
+    destination_path = normalize_path(destination_path)
     destination_orig = destination_path
     if destination_path == source_path:
         destination_path = destination_orig + '(dst)'
@@ -125,6 +134,7 @@ def sort(source_path, destination_path = ''):
     for dir in directories:
         shutil.rmtree(os.path.join(dir.get('s_path'), dir.get('s_name')), ignore_errors=True)
 
+    print(source_path, destination_path)
     if destination_orig == source_path:
         os.rename(destination_path, source_path)
 
