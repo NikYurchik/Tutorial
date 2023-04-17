@@ -11,21 +11,37 @@ CAUDIO = ('MP3', 'OGG', 'WAV', 'AMR', 'FLAC')
 CVIDEO = ('AVI', 'MP4', 'MOV', 'MKV', 'TS', 'SRT', 'DTS', 'MPG')
 CARCHIVES = ('ZIP', 'GZ', 'TAR', 'RAR')
 
-CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
-TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+CYRILLIC_SYMBOLS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЄІЇҐабвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
+TRANSLATION = ("A", "B", "V", "G", "D", "E", "E", "Zh", "Z", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
+               "F", "H", "Ts", "Ch", "Sh", "Sch", "", "Y", "", "E", "Yu", "Ya", "Ye", "I", "Ji", "G",
+               "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "ye", "i", "ji", "g")
-
+TRANSLATION_UKR = ("A", "B", "V", "H", "D", "E", "E", "Zh", "Z", "Y", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
+                   "F", "Kh", "Ts", "Ch", "Sh", "Shch", "", "Y", "", "E", "Yu", "Ya", "Ye", "I", "Yi", "G",
+                   "a", "b", "v", "h", "d", "e", "e", "zh", "z", "y", "i", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+                   "f", "kh", "ts", "ch", "sh", "shch", "", "y", "", "e", "iu", "ia", "ie", "i", "i", "g")
 TRANS = {}
+TRANSU = {}
     
-def normalize(name, ext = ''):
+def transliteration(text, is_ukr = False):
     global TRANS
-    if len(TRANS) == 0:
-        for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
-            TRANS[ord(c)] = l
-            TRANS[ord(c.upper())] = l.upper()
+    global TRANSU
+    if is_ukr:
+        if len(TRANSU) == 0:
+            for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION_UKR):
+                TRANSU[ord(c)] = l
+        return(text.translate(TRANSU))
+    else:
+        if len(TRANS) == 0:
+            for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+                TRANS[ord(c)] = l
+        return(text.translate(TRANS))
+
+
+def normalize(name, ext = ''):
     res = ''
     if len(name) > 0:
-        for s in name.translate(TRANS):
+        for s in transliteration(name):
             if (s >= 'A' and s <= 'Z') or (s >= 'a' and s <= 'z') or (s >= '0' and s <= '9'):
                 res = res + s
             else:
@@ -121,8 +137,17 @@ def prepare_dir(source_path, destination_path):
         None
 
 def sort(source_path, destination_path):
+    def normalize_path(pname):
+        if pname[0] == '"':
+            pname = pname[1:]
+        while pname[-1] in ('\\', '"'):
+            pname = pname[0:len(pname)-1]
+        return pname
+    
     if len(destination_path) == 0:
         destination_path = source_path
+    source_path = normalize_path(source_path)
+    destination_path = normalize_path(destination_path)
     destination_orig = destination_path
     if destination_path == source_path:
         destination_path = destination_orig + '(dst)'
@@ -144,6 +169,5 @@ if __name__ == "__main__":
         destination_path = source_path
     sort(source_path, destination_path)
 else:
-    normalize('')
-
-
+    transliteration('')
+    transliteration('', True)
