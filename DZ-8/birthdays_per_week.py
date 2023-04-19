@@ -1,6 +1,13 @@
 from datetime import datetime, timedelta
 
 
+users = ({'name': 'Bill', 'birthday': datetime(year=1988, month=4, day=19)},
+         {'name': 'Jill', 'birthday': datetime(year=2001, month=4, day=19)},
+         {'name': 'Kim', 'birthday': datetime(year=1999, month=4, day=20)},
+         {'name': 'Kate', 'birthday': datetime(year=2007, month=4, day=25)},
+         {'name': 'Jan', 'birthday': datetime(year=1988, month=4, day=23)}
+        )
+
 def get_birthdays_per_week(users):
     weekdays = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
     listdays = [[], [], [], [], []]
@@ -39,3 +46,5 @@ def get_birthdays_per_week(users):
             if len(st) > 0:
                 res.append(st)
     return res
+
+print(get_birthdays_per_week(users))
