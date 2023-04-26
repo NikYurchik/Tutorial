@@ -168,20 +168,3 @@ print(book.view_records())
 
 book.record_update('Yurii', '+38(067)576-1490', '+38(050)031-7201', '+1(250)241-7847')
 print(book.view_records())
-
-
-# record = Record('Yurii')
-# print(record.view_phones())
-# record.phone_add('+38(067)576-1490', '+38(050)031-7201')
-# print(record.view_phones())
-# record.phone_add('+1(250)241-7847')
-# print(record.view_phones())
-
-# record.phone_delete('+38(050)031-7201')
-# print(record.view_phones())
-
-# record.phone_correct('+1(250)241-7847', '+38(050)031-7201')
-# print(record.view_phones())
-
-# record.phone_update('+1(250)241-7847', '+38(067)576-1490', '+38(050)031-7201')
-# print(record.view_phones())
