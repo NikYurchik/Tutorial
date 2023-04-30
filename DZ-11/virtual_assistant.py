@@ -274,27 +274,30 @@ class AddressBook(UserDict):
         rec = self.record_exists(name, is_raise = -1)
         rec.birthday_save(birthday)
 
-    def view_records(self, chunk_size = None):
+    def view_records(self, chunk_size = 0):
         """
         Display the entire address book in chunks of chunk_size entries.
 
         If chunk_size == None or 0, then all records are displayed in one chunk.
         """
-        self._index = 0
-        self._chunk_num = 0
-        self._chunk_size = 0 if chunk_size == None else chunk_size
+        _index = 0
+        _chunk_num = 0
+        _chunk_size = chunk_size
         head = 'Contacts list:\n'
         sep =  '--------------------------------------------------'
         res = head + sep
         try:
             for key, rec in self.data.items():
-                res = res + '\n' + rec.view_record()
-                self._index += 1
-                if (self._chunk_size > 0) and (self._index // self._chunk_size != self._chunk_num):
+                if len(res) > 0:
+                    res = res + '\n' + rec.view_record()
+                else:
+                    res = rec.view_record()
+                _index += 1
+                if (_chunk_size > 0) and (_index // _chunk_size != _chunk_num):
                     yield res
-                    self._chunk_num += 1
-                    res = sep
-            if res != sep:
+                    _chunk_num += 1
+                    res = ''
+            if len(res) > 0:
                 res = res +'\n' + sep
                 yield res
             else:
@@ -357,4 +360,3 @@ book.rec_add('Maryna', '+38(095)001-6123')
 # print(book['Yurii'])
 for txt in book.view_records(2):
     print(txt)
-    
