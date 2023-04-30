@@ -38,7 +38,6 @@ class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = UserList()
-        #self.emails = UserList()
 
     def phone_add(self, *phone):
         """Adding phones to the self.phones list"""
@@ -91,15 +90,9 @@ class Record:
             res = res + st + ph.value
             st = ', '
         return res
-        
-    # def email_add(self, *email):
-    #     pass
 
-    # def email_update(self, *email):
-    #     pass
-
-    # def email_delete(self, *email):
-    #     pass
+    def __repr__(self):
+        return self.view_phones()
 
 
 class AddressBook(UserDict):
@@ -151,6 +144,13 @@ class AddressBook(UserDict):
                 res.append(rec.view_phones())
         return res
 
+    def __repr__(self):
+        res = ''
+        ls = self.view_records()
+        for rc in ls:
+            res = res + rc if len(res) == 0 else res + '\n' + rc
+        return res
+
 
 book = AddressBook()
 book.record_add('Yurii', '+38(067)576-1490', '+38(050)031-7201')
@@ -162,9 +162,30 @@ print(book.view_records())
 book.record_add('Maryna', '+38(095)001-6123')
 print(book.view_records())
 print(book.view_records('My'))
+print(book)
 
 book.record_delete('My')
 print(book.view_records())
 
-book.record_update('Yurii', '+38(067)576-1490', '+38(050)031-7201', '+1(250)241-7847')
+book.record_update('Yurii', '+38(067)576-1490', '+38(050)031-7201', '+1(250)241-7845')
 print(book.view_records())
+
+book['Yurii'].phone_correct('+1(250)241-7845', '+1(250)241-7847')
+print(book.view_records())
+print(book['Yurii'])
+
+# record = Record('Yurii')
+# print(record.view_phones())
+# record.phone_add('+38(067)576-1490', '+38(050)031-7201')
+# print(record.view_phones())
+# record.phone_add('+1(250)241-7847')
+# print(record.view_phones())
+
+# record.phone_delete('+38(050)031-7201')
+# print(record.view_phones())
+
+# record.phone_correct('+1(250)241-7847', '+38(050)031-7201')
+# print(record.view_phones())
+
+# record.phone_update('+1(250)241-7847', '+38(067)576-1490', '+38(050)031-7201')
+# print(record.view_phones())
