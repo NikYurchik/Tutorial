@@ -24,7 +24,7 @@ Executes commands:
 'good bye', 'close', 'exit' - after any of these commands it outputs 'Good bye!' and completes its work.
 """
 
-class bot_assistant:
+class Bot_assistant:
 
     def __init__(self) -> None:
         self.done = True
@@ -179,7 +179,7 @@ class bot_assistant:
 
 
 def main():
-    ba = bot_assistant()
+    ba = Bot_assistant()
     print("I'm ready")
     while ba.done:
         st = input('>> ')
