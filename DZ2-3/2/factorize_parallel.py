@@ -1,6 +1,7 @@
 import logging
 from multiprocessing import Process, Manager, current_process
 
+
 def calc_factorize(num, val: Manager):
     name = current_process().name
     res = []
@@ -8,6 +9,7 @@ def calc_factorize(num, val: Manager):
         if (num % n) == 0:
             res.append(n)
     val[name] = res
+
 
 def factorize(*number):
     with Manager() as manager:
@@ -26,14 +28,18 @@ def factorize(*number):
     result = []
     for ix in range(len(number)):
         result.append(res['Process-'+str(ix)])
-    return result
+    if len(result) > 1:
+        return result
+    else:
+        return result[0]
+
 
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s  %(threadName)s  %(message)s',
         handlers=[
-            logging.FileHandler("factorize_mp.log"),
+            logging.FileHandler("factorize_parallel.log"),
             logging.StreamHandler()
         ]
     )
