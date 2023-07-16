@@ -89,7 +89,7 @@ async def run(args):
     
     if len(args) > 0:
         s = ",".join(args)
-        ccy_list = s.upper().split(',')
+        ccy_list = s.replace(' ', '').upper().split(',')
         logging.info(f'Currencies {",".join(ccy_list)}')
     else:
         ccy_list = currency
