@@ -47,13 +47,7 @@ async def get_exchange(day_count: int=1, ccy_list: list=currency):
     return rates
 
 
-if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s  %(message)s',
-        handlers=[logging.StreamHandler()]
-    )
-
+async def main():
     day_count = 1
     args = sys.argv
     args.pop(0)
@@ -72,13 +66,23 @@ if __name__ == "__main__":
     else:
         ccy_list = currency
 
-    if platform.system() == 'Windows':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    
-    r = asyncio.run(get_exchange(day_count, ccy_list))
+    r = await get_exchange(day_count, ccy_list)
     
     with open('./cource.json', 'w', encoding='utf-8') as fd:
         json.dump(r, fd, ensure_ascii=False, indent=2)
 
     logging.info('Completed.')
     logging.info('Exchange rates are in the file "cource.json"')
+
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s  %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
+
+    if platform.system() == 'Windows':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    
+    asyncio.run(main())

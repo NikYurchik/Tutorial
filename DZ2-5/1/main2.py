@@ -23,7 +23,7 @@ def set_rate(data):
                     return
 
 
-async def consumer(filename: str, queue: asyncio.Queue):
+async def file_save(filename: str, queue: asyncio.Queue):
     global rates
     async with async_open(filename, 'w', encoding='utf-8') as afd:
         while True:
@@ -42,7 +42,7 @@ async def consumer(filename: str, queue: asyncio.Queue):
                 queue.task_done()
 
 
-async def producer(url: str, queue: asyncio.Queue):
+async def get_exchange(url: str, queue: asyncio.Queue):
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(url) as response:
@@ -73,37 +73,11 @@ async def producer(url: str, queue: asyncio.Queue):
     return None
 
 
-async def run(day_count: int=1):
+async def run(args):
     global rates
-    rates = []
-    rate_queue = asyncio.Queue()
-    producers = []
-    dt = date.today()
-    for k in range(day_count):
-        cdt = dt - timedelta(days=k)
-        sdate = cdt.strftime('%d.%m.%Y')
-        rates.append({sdate: {}})
-        url = f'https://api.privatbank.ua/p24api/exchange_rates?json&date={sdate}'
-        producers.append(asyncio.create_task(producer(url, rate_queue)))
-    rate_consumer = asyncio.create_task(consumer('rates.json', rate_queue))
-
-    await asyncio.gather(*producers)
-    await rate_queue.join()
-    rate_consumer.cancel()
-    logging.info('Completed.')
-    logging.info('Exchange rates are in the file "rates.json"')
-
-
-
-if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s  %(message)s',
-        handlers=[logging.StreamHandler()]
-    )
+    global ccy_list
 
     day_count = 1
-    args = sys.argv
     args.pop(0)
     if len(args) > 0:
         try:
@@ -120,7 +94,34 @@ if __name__ == '__main__':
     else:
         ccy_list = currency
     
+    rates = []
+    rate_queue = asyncio.Queue()
+    proc_exchange = []
+    dt = date.today()
+    for k in range(day_count):
+        cdt = dt - timedelta(days=k)
+        sdate = cdt.strftime('%d.%m.%Y')
+        rates.append({sdate: {}})
+        url = f'https://api.privatbank.ua/p24api/exchange_rates?json&date={sdate}'
+        proc_exchange.append(asyncio.create_task(get_exchange(url, rate_queue)))
+    rate_saver = asyncio.create_task(file_save('rates.json', rate_queue))
+
+    await asyncio.gather(*proc_exchange)
+    await rate_queue.join()
+    rate_saver.cancel()
+    logging.info('Completed.')
+    logging.info('Exchange rates are in the file "rates.json"')
+
+
+
+if __name__ == '__main__':
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s  %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
+
     if platform.system() == 'Windows':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     
-    asyncio.run(run(day_count))
+    asyncio.run(run(sys.argv))
