@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "exchange-rate"
+name = "exchange_multi_session"
 version = "0.1.0"
 description = ""
 authors = ["NikYurchik <14urka@gmail.com>"]
