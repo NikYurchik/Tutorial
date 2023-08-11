@@ -22,7 +22,7 @@ def parse_quotes():
             quotes = page.find_all('div', attrs={'class': 'quote'})
             for quote1 in quotes:
                 quote = quote1.find('span', attrs={'class': 'text'}).text
-                # quote = quote.replace('“', '').replace('”', '')
+                quote = quote.replace('“', '').replace('”', '')
                 author = quote1.find('small', attrs={'class': 'author'}).text
                 autor_url = quote1.find_all('span')
                 autor_url = autor_url[1].find('a')['href']

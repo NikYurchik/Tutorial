@@ -72,12 +72,13 @@ class QuotesSpider(scrapy.Spider):
         for quote in response.xpath("/html//div[@class='quote']"):
             tags = quote.xpath("div[@class='tags']/a/text()").extract()
             author = quote.xpath("span/small/text()").get().strip()
-            q1 = quote.xpath("span[@class='text']/text()").get().strip()
+            q1 = quote.xpath("span[@class='text']/text()").get()
+            q1 = q1.replace('“', '').replace('”', '').strip()
             yield QuoteItem(tags=tags, author=author, quote=q1)
             a_url = self.start_urls[0] + quote.xpath('span/a/@href').get()[1:]
             yield response.follow(url=a_url, callback=self.nested_parse_author, cb_kwargs=dict(author_orig=author))
 
-        next_link = response.xpath("//li[@class='next']/a/@href").get()
+        next_link = response.xpath("//li[@class='next']/a/@href").get()[1:]
         if next_link:
             yield scrapy.Request(url=self.start_urls[0] + next_link)
 
