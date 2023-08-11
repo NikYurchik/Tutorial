@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "homework"
+version = "0.1.0"
+description = ""
+authors = ["NikYurchik <14urka@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+mongoengine = "^0.27.0"
+python-dateutil = "^2.8.2"
+redis = "^4.6.0"
+redis-lru = "^0.1.2"
+requests = "^2.31.0"
+bs4 = "^0.0.1"
+sqlalchemy = "^2.0.19"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
