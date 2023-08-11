@@ -1,3 +1,5 @@
+import os
+import pathlib
 import json
 
 import requests
@@ -98,9 +100,15 @@ def main():
     autors = parse_autor(quotes)
 
 
+    file_path = pathlib.Path(os.path.dirname(AUTHORS_FILE))
+    if not file_path.exists():
+        file_path.mkdir(parents=True)
     with open(AUTHORS_FILE, 'w', encoding='utf-8') as file:
         json.dump(autors, file, ensure_ascii=False, indent=2)
 
+    file_path = pathlib.Path(os.path.dirname(QUOTES_FILE))
+    if not file_path.exists():
+        file_path.mkdir(parents=True)
     with open(QUOTES_FILE, 'w', encoding='utf-8') as file:
         json.dump(quotes, file, ensure_ascii=False, indent=2)
 
