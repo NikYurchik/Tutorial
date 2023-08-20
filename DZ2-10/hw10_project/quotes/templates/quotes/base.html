@@ -7,7 +7,7 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> -->
     <link href="https://quotes.toscrape.com/static/bootstrap.min.css" rel="stylesheet">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'quotes/style.css' %}">
+    <link rel="stylesheet" href="{% static 'quotes/styles.css' %}">
     <title>Document</title>
 </head>
 <body>
@@ -38,5 +38,17 @@
         {% block content %} {% endblock %}
 
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">
+                Quotes by: <a href="https://www.goodreads.com/quotes">GoodReads.com</a>
+            </p>
+            <p class="copyright">
+                <!-- Made with <span class="zyte">❤</span> by <a class="zyte" href="https://www.zyte.com">Zyte</a> -->
+                Made with <span class="zyte">❤</span> by Yurii
+            </p>
+        </div>
+    </footer>
 </body>
 </html>

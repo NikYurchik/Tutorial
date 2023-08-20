@@ -32,7 +32,6 @@
         <div class="form-group col-xs-3">
             <label> Enter Tags:
                 <input type="text" name="tag_str" id="id_tag_str">
-                <!-- {{ form.tag_str }} -->
             </label>
         </div>
     </div>
@@ -41,7 +40,6 @@
         <div class="form-group col-xs-3">
             <label> and/or select Tags:
                 <select name="tags" multiple="multiple">
-                    <option value="">--No tag--</option>
                     {% for tag in tags %}
                     <option value="{{tag.name}}">{{tag.name}}</option>
                     {% endfor %}
