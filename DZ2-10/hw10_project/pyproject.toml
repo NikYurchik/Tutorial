@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "hw10-project"
+version = "0.1.0"
+description = ""
+authors = ["NikYurchik <14urka@gmail.com>"]
+readme = "README.md"
+packages = [{include = "hw10_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sqlalchemy = "^2.0.19"
+psycopg2 = "^2.9.7"
+alembic = "^1.11.2"
+django = "^4.2.4"
+pillow = "^10.0.0"
+python-dateutil = "^2.8.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
