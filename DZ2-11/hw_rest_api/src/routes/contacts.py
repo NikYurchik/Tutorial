@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status, Path, APIRouter, Query
 from sqlalchemy.orm import Session
 
 from src.database.db import get_db
-from src.schemas import ContactResponse, ContactModel, ContactBirthdateModel
+from src.schemas import ContactResponse, ContactModel
 from src.repository import contacts as repos_contacts
 
 router = APIRouter(prefix="/contacts", tags=['contacts'])
@@ -56,10 +56,3 @@ async def remove_contact(contact_id: int = Path(ge=1), db: Session = Depends(get
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     return contact
 
-
-@router.patch("/{contact_id}/birthdate", response_model=ContactResponse)
-async def set_birthdate_contact(body: ContactBirthdateModel, contact_id: int = Path(ge=1), db: Session = Depends(get_db)):
-    contact = await repos_contacts.set_birthdate(contact_id, body, db)
-    if contact is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
-    return contact

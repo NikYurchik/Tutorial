@@ -4,7 +4,7 @@ from sqlalchemy import between
 from sqlalchemy.orm import Session
 
 from src.database.models import Contact
-from src.schemas import ContactModel, ContactBirthdateModel
+from src.schemas import ContactModel
 
 
 async def get_contacts(limit: int, offset: int, db: Session):
@@ -61,13 +61,3 @@ async def remove(contact_id: int, db: Session):
         db.commit()
     return contact
 
-
-async def set_birthdate(contact_id: int, body: ContactBirthdateModel, db: Session):
-    contact = await get_contact_by_id(contact_id, db)
-    if contact:
-        dn = body.birthdate.replace(day=1, month=1)
-        td = body.birthdate - dn
-        contact.birthdate = body.birthdate
-        contact.days_of_year = td.days
-        db.commit()
-    return contact

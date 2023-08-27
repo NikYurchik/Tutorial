@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, func
-from sqlalchemy.orm import relationship, declarative_base
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime, func, event
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
@@ -17,3 +19,17 @@ class Contact(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
 
+@event.listens_for(Contact, 'before_insert')
+def updated_birthdate(mapper, conn, target):
+    if target.birthdate:
+        dn = target.birthdate.replace(day=1, month=1)
+        td = target.birthdate - dn
+        target.days_of_year = td.days
+
+
+@event.listens_for(Contact, 'before_update')
+def updated_birthdate(mapper, conn, target):
+    if target.birthdate:
+        dn = target.birthdate.replace(day=1, month=1)
+        td = target.birthdate - dn
+        target.days_of_year = td.days

@@ -11,8 +11,8 @@ class ContactModel(BaseModel):
     birthdate: date
 
 
-class ContactBirthdateModel(BaseModel):
-    birthdate: date
+# class ContactBirthdateModel(BaseModel):
+#     birthdate: date
 
 
 class ContactResponse(BaseModel):
