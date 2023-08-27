@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "hw-rest-api"
+version = "0.1.0"
+description = ""
+authors = ["NikYurchik <14urka@gmail.com>"]
+readme = "README.md"
+packages = [{include = "hw_rest_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sqlalchemy = "^2.0.20"
+fastapi = "^0.102.0"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+psycopg2 = "^2.9.7"
+alembic = "^1.11.3"
+pydantic = {extras = ["email"], version = "^2.3.0"}
+jinja2 = "^3.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
