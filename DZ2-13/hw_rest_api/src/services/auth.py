@@ -95,16 +95,18 @@ class Auth:
     def create_email_token(self, data: dict):
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(days=7)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire})
+        to_encode.update({"iat": datetime.utcnow(), "exp": expire, "scope": "email_token"})
         token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return token
 
 
-    async def get_email_from_token(self, token: str):
+    def get_email_from_token(self, token: str):
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
-            email = payload["sub"]
-            return email
+            if payload['scope'] == 'email_token':
+                email = payload['sub']
+                return email
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid scope for token')
         except JWTError as e:
             print(e)
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
