@@ -20,6 +20,12 @@ from src.routes import contacts, auth, users
 app = FastAPI()
 
 
+@app.on_event("startup")
+async def startup():
+    r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
+    await FastAPILimiter.init(r)
+
+
 app.include_router(auth.router, prefix='/api')
 app.include_router(contacts.router, prefix='/api')
 app.include_router(users.router, prefix='/api')
@@ -81,12 +87,6 @@ async def user_agent_ban_middleware(request: Request, call_next: Callable):
 
 templates = Jinja2Templates(directory='templates')
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-@app.on_event("startup")
-async def startup():
-    r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
-    await FastAPILimiter.init(r)
 
 
 @app.get("/", response_class=HTMLResponse, description="Main Page", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
