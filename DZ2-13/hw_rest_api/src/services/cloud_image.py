@@ -17,7 +17,7 @@ class CloudImage:
     @staticmethod
     def generate_name_avatar(email: str):
         name = hashlib.sha256(email.encode('utf-8')).hexdigest()[:12]
-        return f"web9/{name}"
+        return f"hw_rest_api/{name}"
 
     @staticmethod
     def upload(file, public_id: str):
