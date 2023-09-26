@@ -1,0 +1,26 @@
+{
+    "en": {
+        "header": "Bot settins.\n",
+        "request_details": "Whether to request missing contact details in command mode (1 - yes, 0 - no).",
+        "display_birthdays": "Should the bot launch a list of contacts whose birthday falls within a specified period from the current day (1 - yes, 0 - no).",
+        "number_of_days": "Number of days from the current day to display a list of contacts whose birthday falls within this period.",
+        "display_lines": "The number of rows to display in one portion of the output list of contacts or notes.",
+        "language": "Interface language (en - English, ru - Russian, uk - Ukrainian)."
+    },
+    "ru": {
+        "header": "Настройки бота.\n",
+        "request_details": "Запрашивать ли в командном режиме недостающие реквизиты контакта (1 - да, 0 - нет).",
+        "display_birthdays": "Выводить ли при запуске бота список контактов, у которых день рождения попадает в заданный период от текущего дня (1 - да, 0 - нет).",
+        "number_of_days": "Количество дней от текущего дня для вывода списка контактов, у которых день рождения приходится на этот период.",
+        "display_lines": "Количество отображаемых строк в одной порции вывода списка контактов или заметок.",
+        "language": "Язык интерфейса (en - English, ru - русский, uk - український)."
+    },
+    "uk": {
+        "header": "Налаштування боту.\n",
+        "request_details": "Чи вимагати в командному режимі реквізити контакту, якого не вистачає (1 - так, 0 - ні).",
+        "display_birthdays": "Чи виводити при запуску бота список контактів, у яких день народження потрапляє у заданий період від поточного дня (1 - так, 0 - ні).",
+        "number_of_days": "Кількість днів від поточного дня для виведення списку контактів, у яких день народження припадає на цей період.",
+        "display_lines": "Кількість рядків, що відображаються в одній порції виведення списку контактів або нотаток.",
+        "language": "Мова інтерфейсу (en - English, ru - російська, uk - українська)."
+    }
+}
