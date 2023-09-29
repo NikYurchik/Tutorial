@@ -41,12 +41,12 @@ tests/test_unit_repository_users.py::TestUsers::test_create_user PASSED         
 tests/test_unit_repository_users.py::TestUsers::test_update_avatar PASSED                         [ 97%]
 tests/test_unit_repository_users.py::TestUsers::test_update_token PASSED                          [100%]
 
----------- coverage: platform win32, python 3.10.8-final-0 -----------
-Name      Stmts   Miss  Cover
------------------------------
-main.py      58     12    79%
------------------------------
-TOTAL        58     12    79%
+coverage: platform win32, python 3.10.8-final-0
+    Name      Stmts   Miss  Cover
+    -----------------------------
+    main.py      58     12    79%
+    -----------------------------
+    TOTAL        58     12    79%
 
 
 Original Readme.
