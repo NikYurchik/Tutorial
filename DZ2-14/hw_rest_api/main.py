@@ -80,23 +80,26 @@ user_agent_ban_list = [r"Python-urllib"]
 #     return response
 
 
-# @app.middleware("http")
-# async def limit_access_by_ip(request: Request, call_next: Callable):
-#     """
-#     The limit_access_by_ip function is a middleware function that limits access to the API by IP address.
-#         It checks if the request's client host IP address is in ALLOWED_IPS, and if not, returns a 403 Forbidden response.
+@app.middleware("http")
+async def limit_access_by_ip(request: Request, call_next: Callable):
+    """
+    The limit_access_by_ip function is a middleware function that limits access to the API by IP address.
+        It checks if the request's client host IP address is in ALLOWED_IPS, and if not, returns a 403 Forbidden response.
     
-#     :param request: Request: Get the ip address of the client that is making a request
-#     :param call_next: Callable: Call the next function in the pipeline
-#     :return: A jsonresponse object, which contains the http status code and a message
-#     :doc-author: Trelent
-#     """
-#     print(f'request.client.host: {request.client.host}')
-#     ip = ip_address(request.client.host)
-#     if ip not in ALLOWED_IPS:
-#         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"detail": message.NOT_ALLOWED_IP_ADDRESS})
-#     response = await call_next(request)
-#     return response
+    :param request: Request: Get the ip address of the client that is making a request
+    :param call_next: Callable: Call the next function in the pipeline
+    :return: A jsonresponse object, which contains the http status code and a message
+    :doc-author: Trelent
+    """
+    print(f'request.client.host: {request.client.host}')
+    try:
+        ip = ip_address(request.client.host)
+        if ip not in ALLOWED_IPS:
+            return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"detail": messages.NOT_ALLOWED_IP_ADDRESS})
+    except Exception as err:
+        print(f"ip_address error: {err}")
+    response = await call_next(request)
+    return response
 
 
 @app.middleware("http")
