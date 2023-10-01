@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Optional
 import pickle
 
@@ -5,7 +6,6 @@ from jose import JWTError, jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 import redis
 
@@ -110,7 +110,8 @@ class Auth:
                 email = payload['sub']
                 return email
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=messages.INVALID_SCOPE_FOR_TOKEN)
-        except JWTError:
+        except JWTError as err:
+            print(err)
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=messages.COULD_NOT_VALIDATE_CREDENTIALS)
 
     async def get_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

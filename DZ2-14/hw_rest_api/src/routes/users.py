@@ -46,6 +46,11 @@ async def update_avatar_user(file: UploadFile = File(),
     :return: A user object
     :doc-author: Trelent
     """
+    print(f"content_type: {file.content_type}")
+    print(f"headers: {file.headers}")
+    print(f"filename: {file.filename}")
+    print(f"size: {file.size}")
+    print(f"file: {file.file}")
     public_id = CloudImage.generate_name_avatar(current_user.email)
     r = CloudImage.upload(file.file, public_id)
     src_url = CloudImage.get_url_for_avatar(public_id, r)

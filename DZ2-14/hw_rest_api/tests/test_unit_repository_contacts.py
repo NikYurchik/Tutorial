@@ -1,3 +1,5 @@
+import os
+
 import unittest
 from unittest.mock import MagicMock
 
@@ -18,16 +20,32 @@ from src.repository.contacts import (
 
 class TestContacts(unittest.IsolatedAsyncioTestCase):
 
+    # @classmethod
+    # def setUpClass(cls) -> None:
+    #     if not os.path.exists("logs"):
+    #         os.mkdir("logs")
+    #     return super().setUpClass()
+
     def setUp(self):
+        # self.logs = open(f"logs/{self._testMethodName}.log", mode="w", encoding="utf-8")
         self.session = MagicMock(spec=Session)
         self.user = User(id=1)
 
+    # def tearDown(self) -> None:
+    #     self.logs.close()
+    #     return super().tearDown()
+
 
     async def test_get_contacts(self):
-        contacts = [Contact(), Contact(), Contact(), Contact()]
-        self.session.query().filter().limit().offset().all.return_value = contacts
-        result = await get_contacts(offset=0, limit=10, user=self.user, db=self.session)
-        self.assertEqual(result, contacts)
+        # try:
+            contacts = [Contact(), Contact(), Contact(), Contact()]
+            self.session.query().filter().limit().offset().all.return_value = contacts
+            result = await get_contacts(offset=0, limit=10, user=self.user, db=self.session)
+            self.assertEqual(result, contacts)
+        #     self.logs.writelines("Test passed")
+        # except Exception as err:
+        #     self.logs.writelines("Test failed! result != contacts")
+        #     self.logs.writelines(str(err))
 
 
     async def test_get_contacts_by_mask_found(self):

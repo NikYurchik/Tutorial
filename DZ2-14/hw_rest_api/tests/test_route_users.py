@@ -34,6 +34,33 @@ def test_read_users_me(client, token, user, monkeypatch):
 
         assert response.status_code == 200, response.text
         data = response.json()
-        # assert len(data) == 0, data.email
         assert data["username"] == user["username"]
         assert data["email"] == user["email"]
+
+
+def test_update_avatar_user(client, token, user, monkeypatch):
+    USER_AVATAR = "http://cloudimage.com/image.png"
+    with patch.object(auth_service, "r") as redis_mock:
+        redis_mock.get.return_value = None
+        monkeypatch.setattr('fastapi_limiter.FastAPILimiter.redis', AsyncMock())
+        monkeypatch.setattr('fastapi_limiter.FastAPILimiter.identifier', AsyncMock())
+        monkeypatch.setattr('fastapi_limiter.FastAPILimiter.http_callback', AsyncMock())
+        monkeypatch.setattr('fastapi_limiter.depends.RateLimiter', AsyncMock())
+
+        monkeypatch.setattr('src.services.cloud_image.CloudImage.generate_name_avatar', MagicMock())
+        monkeypatch.setattr('src.services.cloud_image.CloudImage.upload', MagicMock())
+        monkeypatch.setattr('src.services.cloud_image.CloudImage.get_url_for_avatar', MagicMock(return_value=USER_AVATAR))
+
+        f = './fileupload'
+        with open(f, 'wb') as tmp:
+            tmp.write(b'upload this')
+        with open(f, 'rb') as tmp:
+            response = client.patch("/api/users/avatar",
+                                    files={"file": ("filename", tmp, "image/jpeg")},
+                                    # files=files,
+                                    headers={"Authorization": f"Bearer {token}"})
+            assert response.status_code == 200, response.text
+            data = response.json()
+            assert data["username"] == user["username"]
+            assert data["email"] == user["email"]
+            assert data["avatar"] == USER_AVATAR

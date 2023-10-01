@@ -1,3 +1,5 @@
+import os
+
 import unittest
 from unittest.mock import MagicMock
 
@@ -17,7 +19,14 @@ from src.repository.users import (
 
 class TestUsers(unittest.IsolatedAsyncioTestCase):
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        if not os.path.exists("logs"):
+            os.mkdir("logs")
+        return super().setUpClass()
+
     def setUp(self):
+        self.logs = open(f"logs/{self._testMethodName}.log", mode="w", encoding="utf-8")
         self.session = MagicMock(spec=Session)
         self.gravatar = MagicMock(spec=Gravatar)
         self.gravatar.get_image = MagicMock(spec=Gravatar.get_image)
@@ -26,6 +35,10 @@ class TestUsers(unittest.IsolatedAsyncioTestCase):
         self.url_avatar = "https://gravatar.com/image.png"
         self.username = "username"
         self.password="qwerty1234"
+
+    def tearDown(self) -> None:
+        self.logs.close()
+        return super().tearDown()
 
 
     async def get_user_by_email_found(self):

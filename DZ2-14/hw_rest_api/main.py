@@ -1,5 +1,5 @@
 import re
-from ipaddress import ip_address
+import ipaddress
 from typing import Callable
 import pathlib
 
@@ -63,11 +63,12 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 
 ALLOWED_IPS = [
-    ip_address('0.0.0.0'),
-    ip_address("127.0.0.1")
+    ipaddress.ip_address('0.0.0.0'),
+    ipaddress.ip_address("127.0.0.1")
     ]
 
 user_agent_ban_list = [r"Python-urllib"]
+# user_agent_ban_list = [r"Gecko", r"Python-urllib"]
 
 
 # @app.middleware('http')
@@ -91,9 +92,11 @@ async def limit_access_by_ip(request: Request, call_next: Callable):
     :return: A jsonresponse object, which contains the http status code and a message
     :doc-author: Trelent
     """
-    print(f'request.client.host: {request.client.host}')
+    # print(f'request.client.host: {request.client.host}')
     try:
-        ip = ip_address(request.client.host)
+        ip = ipaddress.ip_address(request.client.host)
+        # print(f"ip: {str(ip)}")
+        # print(f"ip: {str(ALLOWED_IPS)}")
         if ip not in ALLOWED_IPS:
             return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"detail": messages.NOT_ALLOWED_IP_ADDRESS})
     except Exception as err:

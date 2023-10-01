@@ -1,3 +1,4 @@
+import os
 
 import pytest
 from fastapi.testclient import TestClient
@@ -49,3 +50,12 @@ def client(session):
 @pytest.fixture(scope="module")
 def user():
     return {"username": "deadpool", "email": "deadpool@example.com", "password": "123456789"}
+
+
+# @pytest.fixture
+# def log(request):
+#     if not os.path.exists("logs"):
+#         os.mkdir("logs")
+
+#     with open(f"logs/{request.node.name}.log", mode="w", encoding="utf-8") as log:
+#         yield log
